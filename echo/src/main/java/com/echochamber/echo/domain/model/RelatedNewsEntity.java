@@ -20,12 +20,12 @@ public class RelatedNewsEntity {
     @ManyToOne
     private NewsEntity news;
     @Lob
-    private String reason;
+    private String basis;
 
     @Builder
-    public RelatedNewsEntity(NewsEntity opp_news, NewsEntity news, String reason) {
+    public RelatedNewsEntity(NewsEntity opp_news, NewsEntity news, String basis) {
         this.opp_news = opp_news;
         this.news = news;
-        this.reason = reason;
+        this.basis = basis;
     }
 }
