@@ -3,6 +3,8 @@ package com.echochamber.echo.global.util.newsdata;
 import com.echochamber.echo.domain.news.dto.TopicResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,7 +14,13 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @Slf4j
 public class TopicProvider {
-    private final String API_URL = System.getenv("AI_API_BASE_URL") + "/topic";
+
+    private final String API_URL;
+
+    @Autowired
+    public TopicProvider(@Value("${AI_API_BASE_URL}") String apiUrl) {
+        API_URL = apiUrl + "/topic";
+    }
 
     public TopicResponseDto getTopicWords(String content) throws JsonProcessingException {
 
