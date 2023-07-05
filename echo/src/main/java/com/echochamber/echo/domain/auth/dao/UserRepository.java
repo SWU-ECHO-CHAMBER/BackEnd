@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 
+    Boolean existsByEmail(String email);
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE UserEntity u SET u.profileImagePath = :imagePath WHERE u.id = :id")

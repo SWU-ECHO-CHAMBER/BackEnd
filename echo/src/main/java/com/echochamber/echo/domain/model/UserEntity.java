@@ -1,7 +1,6 @@
 package com.echochamber.echo.domain.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,25 +23,21 @@ public class UserEntity {
     private String nickname;
     @Column(columnDefinition = "TEXT")
     private String profileImagePath;
-    private String password;
-    @Lob
-    private String passwordSalt;
+    private String encoded_password;
     private String provider;
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Builder
-    public UserEntity(String email, String nickname, String provider) {
+    public UserEntity(String email, String nickname, String provider, String profileImagePath) {
         this.email = email;
         this.nickname = nickname;
         this.provider = provider;
+        this.profileImagePath = profileImagePath;
     }
 
-    @Builder
-    public UserEntity(String email, String nickname, String password, String passwordSalt) {
+    public UserEntity(String email, String nickname, String encoded_password) {
         this.email = email;
         this.nickname = nickname;
-        this.password = password;
-        this.passwordSalt = passwordSalt;
+        this.encoded_password = encoded_password;
     }
 }
