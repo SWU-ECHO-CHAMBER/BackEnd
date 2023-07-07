@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @Slf4j
 public class EchoApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(EchoApplication.class, args);
     }
