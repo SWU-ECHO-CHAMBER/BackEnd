@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Map;
 
 import static io.jsonwebtoken.Jwts.builder;
 import static io.jsonwebtoken.Jwts.parser;
@@ -19,6 +22,11 @@ public class JwtHandler {
 
     public JwtHandler(@Value("${JWT_SECRET_KEY}") String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    // Bearer 해석
+    public String decodeBearer(String str) {
+        return Arrays.stream(str.split("Bearer")).toList().get(1);
     }
 
     // 토큰 발행

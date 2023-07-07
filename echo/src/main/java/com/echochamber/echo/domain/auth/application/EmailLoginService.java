@@ -1,6 +1,5 @@
 package com.echochamber.echo.domain.auth.application;
 
-import com.echochamber.echo.domain.auth.dao.RefreshTokenRepository;
 import com.echochamber.echo.domain.auth.dao.UserRepository;
 import com.echochamber.echo.domain.auth.domain.LoginService;
 import com.echochamber.echo.domain.model.UserEntity;
@@ -19,12 +18,11 @@ import org.springframework.stereotype.Service;
 public class EmailLoginService extends LoginService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private String input_email;
-    private String input_password;
+    private String email;
 
     @Autowired
-    public EmailLoginService(JwtHandler jwtHandler, RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        super(jwtHandler, refreshTokenRepository);
+    public EmailLoginService(JwtHandler jwtHandler, TokenService tokenService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        super(jwtHandler, tokenService);
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -32,7 +30,7 @@ public class EmailLoginService extends LoginService {
     // 유저 정보 조회
     @Override
     public void getUserData() throws Exception {
-        UserEntity user = userRepository.findByEmail(input_email).orElse(null);
+        UserEntity user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null)
             throw new Exception("Invalid email.");
@@ -41,7 +39,8 @@ public class EmailLoginService extends LoginService {
     }
 
     // 비밀번호 일치 여부 확인
-    public Boolean isPasswordMatch() {
-        return passwordEncoder.matches(input_password, super.getUser().getEncoded_password());
+    public void isPasswordMatch(String input_password) {
+        if (passwordEncoder.matches(input_password, super.getUser().getEncoded_password()))
+            throw new RuntimeException("Password does not match.");
     }
 }

@@ -1,7 +1,6 @@
 package com.echochamber.echo.domain.auth.domain;
 
-import com.echochamber.echo.domain.auth.dao.RefreshTokenRepository;
-import com.echochamber.echo.domain.model.RefreshTokenEntity;
+import com.echochamber.echo.domain.auth.application.TokenService;
 import com.echochamber.echo.domain.model.UserEntity;
 import com.echochamber.echo.global.util.jwt.JwtHandler;
 import lombok.Getter;
@@ -17,13 +16,13 @@ import java.util.Map;
 @Service
 public abstract class LoginService {
     private final JwtHandler jwtHandler;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenService tokenService;
     private UserEntity user;
 
     @Autowired
-    public LoginService(JwtHandler jwtHandler, RefreshTokenRepository refreshTokenRepository) {
+    public LoginService(JwtHandler jwtHandler, TokenService tokenService) {
         this.jwtHandler = jwtHandler;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenService = tokenService;
     }
 
     // 유저 정보 저장
@@ -41,13 +40,10 @@ public abstract class LoginService {
         tokens.put("accessToken", jwtHandler.generateToken(true, payloads));
         tokens.put("refreshToken", jwtHandler.generateToken(false, payloads));
 
-        return tokens;
-    }
+        // Redis에 refreshToken 저장
+        tokenService.saveRefresh(user, tokens.get("refreshToken"));
 
-    // Redis에 refreshToken 저장
-    public void saveRefresh(String token) {
-        RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity(user.getId(), token);
-        refreshTokenRepository.save(refreshTokenEntity);
+        return tokens;
     }
 
     // 응답 전송
@@ -58,5 +54,4 @@ public abstract class LoginService {
 
         return responseData;
     }
-
 }

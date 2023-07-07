@@ -1,6 +1,5 @@
 package com.echochamber.echo.domain.auth.application;
 
-import com.echochamber.echo.domain.auth.dao.RefreshTokenRepository;
 import com.echochamber.echo.domain.auth.dao.UserRepository;
 import com.echochamber.echo.domain.auth.domain.GoogleAuth;
 import com.echochamber.echo.domain.auth.domain.LoginService;
@@ -25,8 +24,8 @@ public class SocialLoginService extends LoginService {
     private String token;
 
     @Autowired
-    public SocialLoginService(JwtHandler jwtHandler, RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, GoogleAuth googleAuth) {
-        super(jwtHandler, refreshTokenRepository);
+    public SocialLoginService(JwtHandler jwtHandler, TokenService tokenService, UserRepository userRepository, GoogleAuth googleAuth) {
+        super(jwtHandler, tokenService);
         this.userRepository = userRepository;
         this.googleAuth = googleAuth;
     }
