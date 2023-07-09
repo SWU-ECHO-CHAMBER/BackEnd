@@ -3,7 +3,7 @@ package com.echochamber.echo.domain.model;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "Bookmark")
 public class BookmarkEntity {
     @Id
