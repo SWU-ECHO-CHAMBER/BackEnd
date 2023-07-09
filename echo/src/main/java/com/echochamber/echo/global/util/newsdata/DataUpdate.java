@@ -27,7 +27,7 @@ public class DataUpdate {
     public void UpdateNewsData() {
         // Check latest update
         NewsEntity latestData = newsRepository.findTopByOrderByPublishedAtDesc().orElse(null);
-        boolean isUpdatable = latestData != null && LocalDateTime.now(ZoneId.of("EST")).isAfter(latestData.getCreatedAt().plusHours(18));
+        boolean isUpdatable = latestData != null && LocalDateTime.now(ZoneId.of("EST", ZoneId.SHORT_IDS)).isAfter(latestData.getCreatedAt().plusHours(18));
 
         // Update data
         if (latestData == null || isUpdatable) {

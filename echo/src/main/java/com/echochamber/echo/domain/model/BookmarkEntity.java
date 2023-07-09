@@ -5,27 +5,29 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "Related_News")
-public class RelatedNewsEntity {
+@Table(name = "Bookmark")
+public class BookmarkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private NewsEntity opp_news;
+    private UserEntity user;
     @ManyToOne
     private NewsEntity news;
-    @Lob
-    private String basis;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Builder
-    public RelatedNewsEntity(NewsEntity opp_news, NewsEntity news, String basis) {
-        this.opp_news = opp_news;
+    public BookmarkEntity(UserEntity user, NewsEntity news) {
+        this.user = user;
         this.news = news;
-        this.basis = basis;
     }
 }

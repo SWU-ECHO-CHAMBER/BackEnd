@@ -12,6 +12,7 @@ import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
 import com.kwabenaberko.newsapilib.models.response.SourcesResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,13 +21,13 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class NewsProvider {
-    private final String API_KEY = System.getenv("NEWS_API_KEY");
-    private final NewsApiClient newsApiClient = new NewsApiClient(API_KEY);
+    private final NewsApiClient newsApiClient;
     private final CrawlingProvider crawlingProvider;
     private final NewsRepository newsRepository;
 
     @Autowired
-    public NewsProvider(CrawlingProvider crawlingProvider, NewsRepository newsRepository) {
+    public NewsProvider(@Value("${NEWS_API_KEY}") String apiKey, CrawlingProvider crawlingProvider, NewsRepository newsRepository) {
+        this.newsApiClient = new NewsApiClient(apiKey);
         this.crawlingProvider = crawlingProvider;
         this.newsRepository = newsRepository;
     }

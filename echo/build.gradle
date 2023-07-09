@@ -40,6 +40,15 @@ dependencies {
     implementation 'com.github.KwabenBerko:News-API-Java:1.0.2'
     implementation 'org.jsoup:jsoup:1.15.3'
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'it.ozimov:embedded-redis:0.7.2'
+    implementation "com.google.api-client:google-api-client:1.32.1"
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'com.google.http-client:google-http-client-gson:1.43.1'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 }
 
 tasks.named('test') {
