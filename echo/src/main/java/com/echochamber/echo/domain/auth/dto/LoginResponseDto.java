@@ -8,13 +8,13 @@ import java.util.Map;
 @Setter
 @ToString
 @NoArgsConstructor
-public class JoinResponseDto {
+public class LoginResponseDto {
     private Long user_id;
     private String access_token;
     private String refresh_token;
 
     @Builder
-    public JoinResponseDto(Long user_id, Map<String, String> tokens) {
+    public LoginResponseDto(Long user_id, Map<String, String> tokens) {
         this.user_id = user_id;
         this.access_token = tokens.get("accessToken");
         this.refresh_token = tokens.get("refreshToken");
