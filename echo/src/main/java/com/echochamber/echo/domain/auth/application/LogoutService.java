@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 public class LogoutService {
-    private UserEntity user;
     private final JwtHandler jwtHandler;
     private final UserRepository userRepository;
     private final TokenService tokenService;
@@ -25,7 +24,7 @@ public class LogoutService {
     }
 
     // Redis 내 refreshToken 삭제
-    public void removeUser() {
-        tokenService.removeRefresh(user);
+    public void removeUser(UserEntity user) {
+        tokenService.removeRefresh(user.getId());
     }
 }

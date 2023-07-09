@@ -17,7 +17,6 @@ public class LeaveService {
     private final JwtHandler jwtHandler;
     private final TokenService tokenService;
     private final UserRepository userRepository;
-    private UserEntity user;
 
     @Autowired
     public LeaveService(JwtHandler jwtHandler, TokenService tokenService, UserRepository userRepository) {
@@ -27,9 +26,9 @@ public class LeaveService {
     }
 
     // 유저 정보 삭제
-    public void removeUser() {
+    public void removeUser(UserEntity user) {
         // Redis
-        tokenService.removeRefresh(user);
+        tokenService.removeRefresh(user.getId());
 
         // DB
         userRepository.deleteById(user.getId());
