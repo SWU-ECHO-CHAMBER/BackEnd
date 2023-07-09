@@ -1,5 +1,6 @@
 package com.echochamber.echo.global.util.jwt;
 
+import com.echochamber.echo.domain.model.UserEntity;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.InvalidClaimException;
@@ -8,10 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import static io.jsonwebtoken.Jwts.builder;
 import static io.jsonwebtoken.Jwts.parser;
@@ -30,7 +28,12 @@ public class JwtHandler {
     }
 
     // 토큰 발행
-    public String generateToken(boolean isAccessToken, Map<String, Object> payloads) {
+    public String generateToken(boolean isAccessToken, UserEntity user) {
+        // payloads 생성
+        Map<String, Object> payloads = new LinkedHashMap<>();
+        payloads.put("userId", user.getId());
+        payloads.put("email", user.getEmail());
+
         Date now = new Date();
         Duration duration = isAccessToken ? Duration.ofHours(2) : Duration.ofDays(7);
         Date expiration = new Date(now.getTime() + duration.toMillis());
@@ -42,8 +45,7 @@ public class JwtHandler {
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .setSubject(subject)
-                .signWith(SignatureAlgorithm.HS256,
-                        Base64.getEncoder().encodeToString(secretKey.getBytes()))
+                .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes()))
                 .compact();
     }
 
