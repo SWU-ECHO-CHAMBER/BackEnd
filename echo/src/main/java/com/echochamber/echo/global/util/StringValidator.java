@@ -26,7 +26,7 @@ public class StringValidator {
             return false;
 
         // 길이
-        return nickname.length() <= 8 && nickname.length() >= 2;
+        return nickname.length() <= 20 && nickname.length() >= 2;
     }
 
     public static boolean isValidPassword(String password) {
