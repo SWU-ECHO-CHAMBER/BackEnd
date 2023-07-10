@@ -12,4 +12,6 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
     List<BookmarkEntity> findAllByUserOrderByCreatedAtDesc(UserEntity user);
 
     Optional<BookmarkEntity> findByUserAndNews(UserEntity user, NewsEntity news);
+
+    Boolean existsByUserAndNews(UserEntity user, NewsEntity news);
 }

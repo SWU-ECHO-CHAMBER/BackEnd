@@ -75,20 +75,32 @@ public class NewsApi {
 
     // Get detail data of article
     @GetMapping("/detail/{news_id}")
-    public ResponseEntity<ResponseDto> getDetail(@PathVariable Long news_id) {
-        NewsDetailDto data = null;
+    public ResponseEntity<ResponseDto> getDetail(@RequestHeader(value = "Authorization") String auth, @PathVariable Long news_id) {
         try {
-            data = newsService.getDetail(news_id);
-
-            if (data == null) {
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid news id."));
-            }
-
+            UserEntity user = tokenValidator.validateToken(auth);
+            NewsDetailDto data = newsService.getDetail(user, news_id);
+            
             return ResponseEntity.ok(DataResponseDto.of(data, 200));
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
+
+            if (e.getMessage().equals("User not found."))
+                return ResponseEntity.status(401).body(ResponseDto.of(401, e.getMessage()));
+
+            if (e.getMessage().equals("Invalid news-id."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
+
+            if (e.getMessage().equals("Unauthorized user."))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
+
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
             log.error(e.getMessage());
-
-            return ResponseEntity.internalServerError().body(ResponseDto.of(500));
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         }
     }
 

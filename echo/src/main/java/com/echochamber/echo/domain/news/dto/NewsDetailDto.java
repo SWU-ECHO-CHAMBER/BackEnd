@@ -20,8 +20,9 @@ public class NewsDetailDto {
     private LocalDateTime published_at;
     private String author;
     private String image_url;
+    private boolean bookmark;
 
-    public NewsDetailDto(NewsEntity news) {
+    public NewsDetailDto(NewsEntity news, boolean is_marked) {
         this.news_id = news.getId();
         this.title = news.getTitle();
         this.content = news.getContent();
@@ -29,5 +30,6 @@ public class NewsDetailDto {
         this.published_at = news.getPublishedAt();
         this.author = news.getAuthor();
         this.image_url = news.getImage_url();
+        this.bookmark = is_marked;
     }
 }
