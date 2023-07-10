@@ -49,7 +49,7 @@ public class TokenValidator {
         // user 정보 존재 여부 검사
         UserEntity user = userRepository.findByEmail((String) payloads.get("email")).orElse(null);
         if (user == null)
-            throw new RuntimeException("User not found.");
+            throw new RuntimeException("Invalid token.");
 
         // refresh token 존재 여부 검사
         RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findById(Long.valueOf((Integer) payloads.get("userId"))).orElse(null);

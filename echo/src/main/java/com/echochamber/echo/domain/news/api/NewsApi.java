@@ -82,17 +82,17 @@ public class NewsApi {
 
             return ResponseEntity.ok(DataResponseDto.of(data, 200));
         } catch (RuntimeException e) {
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException"))
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
+            if (e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
 
-            if (e.getMessage().equals("User not found."))
-                return ResponseEntity.status(401).body(ResponseDto.of(401, e.getMessage()));
-
-            if (e.getMessage().equals("Invalid news-id."))
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
 
             if (e.getMessage().equals("Unauthorized user."))
                 return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
+
+            if (e.getMessage().equals("Invalid news-id."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
 
             log.error(e.getMessage());
             e.printStackTrace();
@@ -130,17 +130,17 @@ public class NewsApi {
 
             return ResponseEntity.ok(DataResponseDto.of(dto, 200));
         } catch (RuntimeException e) {
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException"))
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
+            if (e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
 
-            if (e.getMessage().equals("User not found."))
-                return ResponseEntity.status(401).body(ResponseDto.of(401, e.getMessage()));
-
-            if (e.getMessage().equals("Invalid news-id."))
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
 
             if (e.getMessage().equals("Unauthorized user."))
                 return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
+
+            if (e.getMessage().equals("Invalid news-id."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
 
             log.error(e.getMessage());
             e.printStackTrace();

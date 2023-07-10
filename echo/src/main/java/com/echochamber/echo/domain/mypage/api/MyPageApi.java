@@ -43,17 +43,21 @@ public class MyPageApi {
             updateProfileService.updateNickname(user, nickname);
 
             // 응답
-            return ResponseEntity.ok(ResponseDto.of(200));
+            return ResponseEntity.status(201).body(ResponseDto.of(201));
         } catch (RuntimeException e) {
             log.error(e.getMessage());
 
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
-            }
+            if (e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
 
-            if (e.getMessage().equals("User not found.") || e.getMessage().equals("Invalid nickname format.") || e.getMessage().equals("Nickname unchanged.")) {
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
+
+            if (e.getMessage().equals("Unauthorized user."))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
+
+            if (e.getMessage().equals("Invalid nickname format.") || e.getMessage().equals("Nickname unchanged."))
                 return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
-            }
 
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
@@ -73,17 +77,21 @@ public class MyPageApi {
             updateProfileService.updatePassword(user, password);
 
             // 응답
-            return ResponseEntity.ok(ResponseDto.of(200));
+            return ResponseEntity.status(201).body(ResponseDto.of(201));
         } catch (RuntimeException e) {
             log.error(e.getMessage());
 
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
-            }
+            if (e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
 
-            if (e.getMessage().equals("User not found.") || e.getMessage().equals("Invalid password format.")) {
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
+
+            if (e.getMessage().equals("Unauthorized user."))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
+
+            if (e.getMessage().equals("Invalid password format."))
                 return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
-            }
 
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
@@ -94,7 +102,7 @@ public class MyPageApi {
 
     // 프로필 이미지 변경
     @PatchMapping("/profile-image")
-    public ResponseEntity<ResponseDto> updateProfileImage(@RequestHeader(value = "Authorization") String auth, @RequestPart(value = "profile") MultipartFile profile) {
+    public ResponseEntity<ResponseDto> updateProfileImage(@RequestHeader(value = "Authorization") String auth, @RequestPart(value = "profile", required = false) MultipartFile profile) {
         try {
             // 토큰 검사
             UserEntity user = tokenValidator.validateToken(auth);
@@ -111,16 +119,19 @@ public class MyPageApi {
                 ProfileImageDto dto = new ProfileImageDto(file_path);
                 return ResponseEntity.status(201).body(DataResponseDto.of(dto, 201));
             }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
         } catch (RuntimeException e) {
             log.error(e.getMessage());
 
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
-            }
+            if (e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
 
-            if (e.getMessage().equals("User not found.")) {
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
-            }
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
+
+            if (e.getMessage().equals("Unauthorized user."))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
 
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
@@ -150,13 +161,14 @@ public class MyPageApi {
         } catch (RuntimeException e) {
             log.error(e.getMessage());
 
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
-            }
+            if (e.getMessage().equals("ExpiredJwtException"))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
 
-            if (e.getMessage().equals("User not found.")) {
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
-            }
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token."))
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
+
+            if (e.getMessage().equals("Unauthorized user."))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
 
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
