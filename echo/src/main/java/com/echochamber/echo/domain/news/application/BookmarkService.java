@@ -5,9 +5,13 @@ import com.echochamber.echo.domain.model.NewsEntity;
 import com.echochamber.echo.domain.model.UserEntity;
 import com.echochamber.echo.domain.news.dao.BookmarkRepository;
 import com.echochamber.echo.domain.news.dao.NewsRepository;
+import com.echochamber.echo.domain.news.dto.NewsItemDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -40,5 +44,18 @@ public class BookmarkService {
             bookmarkRepository.delete(bookmarkEntity);
             return false;
         }
+    }
+
+    // 북마크 리스트 조회
+    public List<NewsItemDto> getBookmarkList(UserEntity user) {
+        List<BookmarkEntity> list = bookmarkRepository.findAllByUserOrderByCreatedAtDesc(user);
+        List<NewsItemDto> result = new LinkedList<>();
+
+        for (BookmarkEntity bookmark : list) {
+            NewsItemDto dto = new NewsItemDto(bookmark.getNews());
+            result.add(dto);
+        }
+
+        return result;
     }
 }
