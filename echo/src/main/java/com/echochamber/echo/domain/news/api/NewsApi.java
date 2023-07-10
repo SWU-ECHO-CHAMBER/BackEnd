@@ -79,7 +79,7 @@ public class NewsApi {
         try {
             UserEntity user = tokenValidator.validateToken(auth);
             NewsDetailDto data = newsService.getDetail(user, news_id);
-            
+
             return ResponseEntity.ok(DataResponseDto.of(data, 200));
         } catch (RuntimeException e) {
             if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException"))
@@ -121,7 +121,7 @@ public class NewsApi {
     }
 
     // 북마크 추가 및 삭제
-    @PostMapping("/mark/{news-id}")
+    @PatchMapping("/mark/{news-id}")
     public ResponseEntity<ResponseDto> setBookmark(@RequestHeader(value = "Authorization") String auth, @PathVariable(value = "news-id") Long news_id) {
         try {
             UserEntity user = tokenValidator.validateToken(auth);
