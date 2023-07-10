@@ -49,13 +49,13 @@ public class JoinService {
     }
 
     // DB 정보 저장
-    public Long saveData(String email, String nickname, String password, MultipartFile image) throws IOException {
+    public Long saveData(String email, String nickname, String password, MultipartFile image) throws IOException, IllegalArgumentException {
         // 비밀번호 암호화
         String encoded_password = encodePassword(password);
 
         // 프로필 이미지 저장
         String profile_path = image == null || image.isEmpty() ? null : imageHandler.saveProfileImage(email, image);
-        
+
         // 유저 객체 생성
         UserEntity newUser = new UserEntity(email, nickname, encoded_password, null, profile_path);
 
