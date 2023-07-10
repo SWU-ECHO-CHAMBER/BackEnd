@@ -35,9 +35,11 @@ public class UserEntity {
         this.profileImagePath = profileImagePath;
     }
 
-    public UserEntity(String email, String nickname, String encoded_password) {
+    public UserEntity(String email, String nickname, String encoded_password, String provider, String profileImagePath) {
         this.email = email;
         this.nickname = nickname;
         this.encoded_password = encoded_password;
+        this.provider = null;
+        this.profileImagePath = profileImagePath;
     }
 }

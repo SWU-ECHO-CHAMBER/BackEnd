@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -105,7 +107,7 @@ public class AuthApi {
 
     // 회원가입
     @PostMapping("/email/join")
-    public ResponseEntity<ResponseDto> joinEmail(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password, @RequestParam(value = "nickname") String nickname) {
+    public ResponseEntity<ResponseDto> joinEmail(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password, @RequestParam(value = "nickname") String nickname, @RequestPart(value = "profile", required = false) MultipartFile profile) {
         try {
             // email 유효성 검사
             if (joinService.checkEmailDup(email)) {
@@ -116,12 +118,17 @@ public class AuthApi {
             joinService.validateValues(nickname, password);
 
             // 비밀번호 암호화 및 DB 저장
-            Long new_user_id = joinService.saveData(email, nickname, password);
+            Long new_user_id = joinService.saveData(email, nickname, password, profile);
             EmailJoinDto data = new EmailJoinDto(new_user_id);
 
             // 응답
             return ResponseEntity.ok(DataResponseDto.of(data, 200));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
+            e.printStackTrace();
+            
             if (e.getMessage().equals("Invalid email format.") || e.getMessage().equals("Invalid nickname format.") || e.getMessage().equals("Invalid password format."))
                 return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
 
