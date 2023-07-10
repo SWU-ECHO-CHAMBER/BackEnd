@@ -35,8 +35,8 @@ public class TokenService {
     public Map<String, String> generateTokens(UserEntity user) {
         // token 발행
         Map<String, String> tokens = new LinkedHashMap<>();
-        tokens.put("accessToken", jwtHandler.generateToken(true, user));
-        tokens.put("refreshToken", jwtHandler.generateToken(false, user));
+        tokens.put("access_token", jwtHandler.generateToken(true, user));
+        tokens.put("refresh_token", jwtHandler.generateToken(false, user));
 
         return tokens;
     }

@@ -37,7 +37,7 @@ public class JwtHandler {
         Date now = new Date();
         Duration duration = isAccessToken ? Duration.ofHours(2) : Duration.ofDays(7);
         Date expiration = new Date(now.getTime() + duration.toMillis());
-        String subject = isAccessToken ? "accessToken" : "refreshToken";
+        String subject = isAccessToken ? "access_token" : "refresh_token";
 
         return builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(payloads)
