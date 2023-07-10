@@ -30,7 +30,7 @@ public class TokenValidator {
 
     // Bearer 해석
     public String decodeBearer(String str) {
-        return Arrays.stream(str.split("Bearer")).toList().get(1);
+        return Arrays.stream(str.split("Bearer ")).toList().get(1);
     }
 
     public UserEntity validateToken(String authorization) throws RuntimeException {
