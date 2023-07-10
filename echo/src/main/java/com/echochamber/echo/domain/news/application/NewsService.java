@@ -1,6 +1,8 @@
 package com.echochamber.echo.domain.news.application;
 
 import com.echochamber.echo.domain.model.NewsEntity;
+import com.echochamber.echo.domain.model.UserEntity;
+import com.echochamber.echo.domain.news.dao.BookmarkRepository;
 import com.echochamber.echo.domain.news.dao.NewsRepository;
 import com.echochamber.echo.domain.news.dto.NewsDetailDto;
 import com.echochamber.echo.domain.news.dto.NewsItemDto;
@@ -17,11 +19,13 @@ import java.util.List;
 @Slf4j
 public class NewsService {
     private final NewsRepository newsRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final TopicProvider topicProvider;
 
     @Autowired
-    public NewsService(NewsRepository newsRepository, TopicProvider topicProvider) {
+    public NewsService(NewsRepository newsRepository, BookmarkRepository bookmarkRepository, TopicProvider topicProvider) {
         this.newsRepository = newsRepository;
+        this.bookmarkRepository = bookmarkRepository;
         this.topicProvider = topicProvider;
     }
 
@@ -58,15 +62,14 @@ public class NewsService {
     }
 
     // Get detail data of article
-    public NewsDetailDto getDetail(Long news_id) throws Exception {
-        NewsDetailDto newsDetailDto = null;
-        NewsEntity newsEntity = newsRepository.findById(news_id).orElse(null);
+    public NewsDetailDto getDetail(UserEntity user, Long news_id) throws RuntimeException {
+        NewsEntity news = newsRepository.findById(news_id).orElse(null);
+        if (news == null)
+            throw new RuntimeException("Invalid news-id.");
 
-        if (newsEntity != null) {
-            newsDetailDto = new NewsDetailDto(newsEntity);
-        }
-
-        return newsDetailDto;
+        boolean isMarked = bookmarkRepository.existsByUserAndNews(user, news);
+        
+        return new NewsDetailDto(news, isMarked);
     }
 
     // Get top headline

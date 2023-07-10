@@ -177,7 +177,7 @@ public class AuthApi {
             log.error(e.getMessage());
 
             if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, e.getMessage()));
+                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
             }
 
             if (e.getMessage().equals("User not found.")) {
