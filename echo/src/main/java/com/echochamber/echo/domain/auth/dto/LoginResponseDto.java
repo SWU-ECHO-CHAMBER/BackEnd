@@ -16,7 +16,7 @@ public class LoginResponseDto {
     @Builder
     public LoginResponseDto(Long user_id, Map<String, String> tokens) {
         this.user_id = user_id;
-        this.access_token = tokens.get("accessToken");
-        this.refresh_token = tokens.get("refreshToken");
+        this.access_token = tokens.get("access_token");
+        this.refresh_token = tokens.get("refresh_token");
     }
 }

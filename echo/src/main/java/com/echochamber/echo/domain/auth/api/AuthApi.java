@@ -70,7 +70,7 @@ public class AuthApi {
 
             // 2. 토큰 발행 및 redis 저장
             Map<String, String> tokens = tokenService.generateTokens(user);
-            tokenService.saveRefresh(user.getId(), tokens.get("refreshToken"));
+            tokenService.saveRefresh(user.getId(), tokens.get("refresh_token"));
 
             // 3. response
             LoginResponseDto dto = new LoginResponseDto(user.getId(), tokens);
@@ -80,7 +80,7 @@ public class AuthApi {
             if (e.getMessage().equals("Password does not match."))
                 return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
 
-            if (e.getMessage().equals("Invalid email."))
+            if (e.getMessage().equals("User not found."))
                 return ResponseEntity.status(401).body(ResponseDto.of(401, e.getMessage()));
 
             log.error(e.getMessage());
@@ -123,12 +123,14 @@ public class AuthApi {
 
             // 응답
             return ResponseEntity.ok(DataResponseDto.of(data, 200));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
             e.printStackTrace();
-            
+
             if (e.getMessage().equals("Invalid email format.") || e.getMessage().equals("Invalid nickname format.") || e.getMessage().equals("Invalid password format."))
                 return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
 
@@ -149,17 +151,19 @@ public class AuthApi {
             // 응답
             return ResponseEntity.ok(ResponseDto.of(200));
         } catch (RuntimeException e) {
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException"))
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
+            log.error(e.getMessage());
 
-            if (e.getMessage().equals("User not found."))
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
+            if (e.getMessage().equals("ExpiredJwtException")) {
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
+            }
+
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token.")) {
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
+            }
 
             if (e.getMessage().equals("Unauthorized user."))
                 return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
 
-            log.error(e.getMessage());
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -183,13 +187,16 @@ public class AuthApi {
         } catch (RuntimeException e) {
             log.error(e.getMessage());
 
-            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid token."));
+            if (e.getMessage().equals("ExpiredJwtException")) {
+                return ResponseEntity.status(403).body(ResponseDto.of(403, "Token expired."));
             }
 
-            if (e.getMessage().equals("User not found.")) {
-                return ResponseEntity.badRequest().body(ResponseDto.of(400, e.getMessage()));
+            if (e.getMessage().equals("InvalidClaimException") || e.getMessage().equals("Invalid token.")) {
+                return ResponseEntity.badRequest().body(ResponseDto.of(400, "Invalid token."));
             }
+
+            if (e.getMessage().equals("Unauthorized user."))
+                return ResponseEntity.status(403).body(ResponseDto.of(403, e.getMessage()));
 
             return ResponseEntity.internalServerError().body(ResponseDto.of(500, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         } catch (Exception e) {
@@ -222,7 +229,7 @@ public class AuthApi {
             }
         } catch (RuntimeException e) {
             if (e.getMessage().equals("ExpiredJwtException")) {
-                return ResponseEntity.status(401).body(ResponseDto.of(401, "Expired refreshToken."));
+                return ResponseEntity.status(401).body(ResponseDto.of(401, "RefreshToken expired."));
             }
 
             return ResponseEntity.status(401).body(ResponseDto.of(401, "Invalid refreshToken."));
@@ -235,7 +242,7 @@ public class AuthApi {
 
             // 토큰 발행 및 redis 저장
             Map<String, String> tokens = tokenService.generateTokens(user);
-            tokenService.saveRefresh(user.getId(), tokens.get("refreshToken"));
+            tokenService.saveRefresh(user.getId(), tokens.get("refresh_token"));
 
             // response
             return ResponseEntity.ok(DataResponseDto.of(tokens, 200));

@@ -55,17 +55,17 @@ public class UpdateProfileService {
 
     // 프로필 이미지 변경
     public String updateProfileImage(UserEntity user, MultipartFile image) throws IOException, RuntimeException {
-        // 이미지 삭제
+        // 이미지 저장 (비어있는 image일 경우 null 설정)
+        String file_path = image == null || image.isEmpty() ? null : imageHandler.saveProfileImage(user.getEmail(), image);
+
+        // 기존 이미지 파일 삭제
         if (user.getProfileImagePath() != null) {
             imageHandler.deleteProfileImage(user.getProfileImagePath());
         }
 
-        // 이미지 저장 (비어있는 image일 경우 이미지 삭제)
-        String file_path = image == null || image.isEmpty() ? null : imageHandler.saveProfileImage(user.getEmail(), image);
-
         // 데이터 업데이트
         userRepository.updateProfileImagePath(file_path, user.getId());
-        
+
         return file_path;
     }
 }
