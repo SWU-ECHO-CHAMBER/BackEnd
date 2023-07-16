@@ -3,6 +3,8 @@ package com.echochamber.echo.domain.mypage.api;
 import com.echochamber.echo.domain.model.UserEntity;
 import com.echochamber.echo.domain.mypage.application.UpdateProfileService;
 import com.echochamber.echo.domain.mypage.dto.ProfileImageDto;
+import com.echochamber.echo.domain.mypage.vo.NicknameVo;
+import com.echochamber.echo.domain.mypage.vo.PasswordVo;
 import com.echochamber.echo.domain.news.application.BookmarkService;
 import com.echochamber.echo.domain.news.dto.NewsItemDto;
 import com.echochamber.echo.global.common.response.DataResponseDto;
@@ -34,12 +36,13 @@ public class MyPageApi {
 
     // 닉네임 변경
     @PatchMapping("/nickname")
-    public ResponseEntity<ResponseDto> updateNickname(@RequestHeader(value = "Authorization") String auth, @RequestParam(value = "nickname") String nickname) {
+    public ResponseEntity<ResponseDto> updateNickname(@RequestHeader(value = "Authorization") String auth, @RequestBody NicknameVo nicknameVo) {
         try {
             // 토큰 검사
             UserEntity user = tokenValidator.validateToken(auth);
 
             // 닉네임 변경
+            String nickname = nicknameVo.getNickname();
             updateProfileService.updateNickname(user, nickname);
 
             // 응답
@@ -68,12 +71,13 @@ public class MyPageApi {
 
     // 비밀번호 변경
     @PatchMapping("/password")
-    public ResponseEntity<ResponseDto> updatePassword(@RequestHeader(value = "Authorization") String auth, @RequestParam(value = "password") String password) {
+    public ResponseEntity<ResponseDto> updatePassword(@RequestHeader(value = "Authorization") String auth, @RequestBody PasswordVo passwordVo) {
         try {
             // 토큰 검사
             UserEntity user = tokenValidator.validateToken(auth);
 
             // 비밀번호 변경
+            String password = passwordVo.getPassword();
             updateProfileService.updatePassword(user, password);
 
             // 응답
