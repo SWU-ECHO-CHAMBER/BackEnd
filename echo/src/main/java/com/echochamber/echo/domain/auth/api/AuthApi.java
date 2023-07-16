@@ -3,6 +3,8 @@ package com.echochamber.echo.domain.auth.api;
 import com.echochamber.echo.domain.auth.application.*;
 import com.echochamber.echo.domain.auth.dto.EmailJoinDto;
 import com.echochamber.echo.domain.auth.dto.LoginResponseDto;
+import com.echochamber.echo.domain.auth.vo.EmailCheckVo;
+import com.echochamber.echo.domain.auth.vo.EmailLoginVo;
 import com.echochamber.echo.domain.model.UserEntity;
 import com.echochamber.echo.global.common.response.DataResponseDto;
 import com.echochamber.echo.global.common.response.ResponseDto;
@@ -63,8 +65,11 @@ public class AuthApi {
 
     // 이메일 로그인
     @PostMapping("/email")
-    public ResponseEntity<ResponseDto> authEmail(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+    public ResponseEntity<ResponseDto> authEmail(@RequestBody EmailLoginVo emailLoginVo) {
         try {
+            String email = emailLoginVo.getEmail();
+            String password = emailLoginVo.getPassword();
+
             // 1. 인증 및 유저 정보 추출
             UserEntity user = loginService.getUserData(email, password);
 
@@ -90,8 +95,10 @@ public class AuthApi {
 
     // 이메일 중복확인
     @PostMapping("/email/check")
-    public ResponseEntity<ResponseDto> checkEmail(@RequestParam(value = "email") String email) {
+    public ResponseEntity<ResponseDto> checkEmail(@RequestBody EmailCheckVo emailCheckVo) {
         try {
+            String email = emailCheckVo.getEmail();
+
             if (joinService.checkEmailDup(email)) {
                 return ResponseEntity.status(400).body(ResponseDto.of(400, "Email already exists."));
             }
