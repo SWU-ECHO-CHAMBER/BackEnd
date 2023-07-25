@@ -20,6 +20,7 @@ public class NewsDetailDto {
     private LocalDateTime published_at;
     private String author;
     private String image_url;
+    private String url;
     private boolean marked;
 
     public NewsDetailDto(NewsEntity news, boolean is_marked) {
@@ -30,6 +31,7 @@ public class NewsDetailDto {
         this.published_at = news.getPublishedAt();
         this.author = news.getAuthor();
         this.image_url = news.getImage_url();
+        this.url = news.getUrl();
         this.marked = is_marked;
     }
 }
