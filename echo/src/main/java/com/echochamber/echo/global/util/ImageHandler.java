@@ -30,6 +30,8 @@ public class ImageHandler {
         String file_path = DIR_PATH + file_url;
         image.transferTo(new File(file_path));
 
+        log.info("File uploaded: " + file_url);
+
         return file_url;
     }
 

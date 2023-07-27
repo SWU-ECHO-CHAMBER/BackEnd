@@ -114,7 +114,7 @@ public class AuthApi {
 
     // 회원가입
     @PostMapping("/email/join")
-    public ResponseEntity<ResponseDto> joinEmail(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password, @RequestParam(value = "nickname") String nickname, @RequestPart(value = "profile", required = false) MultipartFile profile) {
+    public ResponseEntity<ResponseDto> joinEmail(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password, @RequestParam(value = "nickname") String nickname, @RequestParam(value = "profile", required = false) MultipartFile profile) {
         try {
             // email 유효성 검사
             if (joinService.checkEmailDup(email)) {
